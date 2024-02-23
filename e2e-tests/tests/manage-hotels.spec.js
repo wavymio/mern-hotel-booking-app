@@ -52,16 +52,35 @@ test("Should allow user to add a hotel", async ({ page }) => {
 test("should display hotels", async ({ page }) => {
     await page.goto(`${UI_URL}my-hotels`)
 
-    await expect(page.getByText("Dublin Resort")).toBeVisible()
+    await expect(page.getByText("Dublin Resort").first()).toBeVisible()
 
-    await expect(page.getByText("This is a description for the test hotel")).toBeVisible()
+    await expect(page.getByText("This is a description for the test hotel").first()).toBeVisible()
 
-    await expect(page.getByText("Dublin, Ireland")).toBeVisible()
-    await expect(page.getByText("Budget")).toBeVisible()
-    await expect(page.getByText("$100 per Night")).toBeVisible()
-    await expect(page.getByText("2 adults, 4 children")).toBeVisible()
-    await expect(page.getByText("3 Star Rating")).toBeVisible()
+    await expect(page.getByText("Dublin, Ireland").first()).toBeVisible()
+    await expect(page.getByText("Budget").first()).toBeVisible()
+    await expect(page.getByText("$100 per Night").first()).toBeVisible()
+    await expect(page.getByText("2 adults, 4 children").first()).toBeVisible()
+    await expect(page.getByText("3 Star Rating").first()).toBeVisible()
 
-    await expect(page.getByRole("link", { name: "View Details"})).toBeVisible()
+    await expect(page.getByRole("link", { name: "View Details"}).first()).toBeVisible()
     await expect(page.getByRole("link", { name: "Add Hotel"})).toBeVisible()
+})
+
+test("should edit hotel", async ({ page }) => {
+    await page.goto(`${UI_URL}my-hotels`)
+
+    await page.getByRole("link", {name: "View Details"}).first().click()
+
+    await page.waitForSelector('[name="name"]', {state: "attached"})
+    await expect(page.locator('[name="name"]')).toHaveValue('Dublin Resort')
+    await page.locator('[name="name"]').fill("Dublin Resort Updated")
+    await page.getByRole("button", { name: "Save" }).click()
+    await expect(page.getByText('Hotel Updated')).toBeVisible()
+
+    await page.reload()
+
+    await expect(page.locator('[name="name"]')).toHaveValue('Dublin Resort Updated')
+    await page.locator('[name="name"]').fill("Dublin Resort")
+    await page.getByRole("button", { name: "Save" }).click()
+    await expect(page.getByText('Hotel Updated')).toBeVisible()
 })
