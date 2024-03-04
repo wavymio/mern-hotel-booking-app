@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const router = Router()
 const Hotel = require('../models/hotel')
+const {param, validationResult} = require('express-validator')
 
 router.get('/search', async (req, res) => {
     try {
@@ -39,6 +40,25 @@ router.get('/search', async (req, res) => {
     } catch (e) {
         console.log("Error: ", e)
         res.status(500).json({message: "Something went wrong"})
+    }
+})
+
+router.get('/:id', [
+    param("id").notEmpty().withMessage("Hotel ID is required")
+], async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors })
+    }
+
+    const id = req.params.id.toString()
+
+    try {
+        const hotel = await Hotel.findById(id)
+        res.json(hotel)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "Error fetching hotel" })
     }
 })
 
