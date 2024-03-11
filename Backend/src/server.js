@@ -17,6 +17,7 @@ const userRoutes = require('./routes/users')
 const authRoutes = require('./routes/auth')
 const myHotelRoutes = require('./routes/my-hotels')
 const hotelRoutes = require('./routes/hotels')
+const bookingRoutes = require('./routes/my-bookings')
 
 const app = express()
 app.use(cookieParser())
@@ -32,6 +33,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/my-hotels', myHotelRoutes)
 app.use('/api/hotels', hotelRoutes)
+app.use('/api/my-bookings', bookingRoutes)
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../../Frontend/dist/index.html"))
